@@ -57,12 +57,16 @@ export default function Game() {
                   'Authorization': TOKEN }
     };
     setLoading(true);
-    const response = await fetch('https://battleship.iic2513.phobos.cl/games', requestOptions);
-    const data = await response.json();
-    let gameId = data.gameId
-    setGameId(gameId);
-    setLoading(false);
-  });
+    try {
+      const response = await fetch('https://battleship.iic2513.phobos.cl/games', requestOptions)
+      const data = response.json();
+      let gameId = data.gameId
+      setGameId(gameId);
+      setLoading(false);
+    } catch (e) {
+      console.log(e)
+    }    
+  }, []);
 
   const fetchTurn = useCallback(async (body) => {
     const requestOptions = {
@@ -72,12 +76,16 @@ export default function Game() {
       body: JSON.stringify( body )
     };
       setLoading(true);
-      const response = await fetch(`https://battleship.iic2513.phobos.cl/games/${gameId}/action`, requestOptions)
-      const data = await response.json();
-      console.log(data);
-      handleComputerTurn(data);
-      setLoading(false);
-    });
+      try {
+        const response = await fetch(`https://battleship.iic2513.phobos.cl/games/${gameId}/action`, requestOptions)
+        const data = response.json();
+        console.log(data);
+        handleComputerTurn(data);
+        setLoading(false);
+      } catch (e) {
+        console.log(e)
+      }
+    }, []);
 
   const handleCellClick = (row, col) => {
     if (!started && shipPlacingType !== null) {
